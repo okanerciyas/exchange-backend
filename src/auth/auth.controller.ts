@@ -1,7 +1,7 @@
-import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { Public } from './decorators/set-metadata.decorator';
-import { LoginDto } from './dto/login.dto';
+import {Body, Controller, Post, UnauthorizedException} from '@nestjs/common';
+import {AuthService} from './auth.service';
+import {Public} from './decorators/set-metadata.decorator';
+import {LoginDto} from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -11,8 +11,7 @@ export class AuthController {
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     try {
-      const response = await this.authService.login(loginDto);
-      return response;
+      return await this.authService.login(loginDto);
     } catch (error) {
       throw new UnauthorizedException(error.message);
     }

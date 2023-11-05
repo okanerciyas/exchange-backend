@@ -62,11 +62,9 @@ export class UsersService {
       attributes: { exclude: ['password'] },
     });
 
-    const filteredUsers = users
-      .map((user) => user.get({ plain: true }))
-      .filter((user) => !user.roles.includes(RoleEnum.SUPER_ADMIN));
-
-    return filteredUsers;
+    return users
+        .map((user) => user.get({plain: true}))
+        .filter((user) => !user.roles.includes(RoleEnum.SUPER_ADMIN));
   }
 
   async updateUser(

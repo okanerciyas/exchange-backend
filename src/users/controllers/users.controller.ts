@@ -1,4 +1,4 @@
-import {Body, Controller, Get, ParseFloatPipe, Patch, Post, Put, Query, Req} from '@nestjs/common';
+import {Body, Controller, Get, Patch, Post, Put, Query, Req} from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { Public } from '../../auth/decorators/set-metadata.decorator';
