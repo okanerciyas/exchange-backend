@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
-import { User } from '../../entities/user.entity';
+import { UserEntity } from '../../entities';
 import * as argon2 from 'argon2';
 import { UsersService } from '../../users/services/users.service';
 
@@ -11,7 +11,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super();
   }
 
-  async validateUser(username: string, password: string): Promise<User> {
+  async validateUser(username: string, password: string): Promise<UserEntity> {
     const user = await this.usersService.findByUsername(username);
 
     if (user && (await argon2.verify(user.password, password))) {
@@ -21,7 +21,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     throw new UnauthorizedException('Invalid credentials');
   }
 
-  async validate(username: string, password: string): Promise<User> {
+  async validate(username: string, password: string): Promise<UserEntity> {
     const user = await this.validateUser(username, password);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');

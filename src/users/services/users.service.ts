@@ -1,24 +1,20 @@
-import {
-  ConflictException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { RoleEnum, User } from '../../entities/user.entity';
-import { InjectModel } from '@nestjs/sequelize';
+import {ConflictException, Injectable, NotFoundException,} from '@nestjs/common';
+import {CreateUserDto} from '../dto/create-user.dto';
+import {RoleEnum, UserEntity} from '../../entities';
+import {InjectModel} from '@nestjs/sequelize';
 import * as argon2 from 'argon2';
-import { UpdateUserDto } from '../dto/update-user.dto';
-import { Op } from 'sequelize';
+import {UpdateUserDto} from '../dto/update-user.dto';
+import {Op} from 'sequelize';
+import {AddMoneyDto} from '../dto/add-money.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User)
-    private readonly userModel: typeof User,
+    @InjectModel(UserEntity)
+    private readonly userModel: typeof UserEntity,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
     const { password, username, email } = createUserDto;
 
     const userWithSameCredentials = await this.userModel.findOne({
@@ -26,7 +22,7 @@ export class UsersService {
     });
 
     if (userWithSameCredentials) {
-      throw new ConflictException('User already exists');
+      throw new ConflictException('UserEntity already exists');
     }
 
     const hashedPassword = await argon2.hash(password);
@@ -34,6 +30,7 @@ export class UsersService {
     const user = await this.userModel.create({
       username,
       email,
+      balance: 0,
       password: hashedPassword,
     });
 
@@ -44,23 +41,23 @@ export class UsersService {
     return userPlainObject;
   }
 
-  async findByUsername(username: string): Promise<User> {
+  async findByUsername(username: string): Promise<UserEntity> {
     const user = await this.userModel.findOne({ where: { username } });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('UserEntity not found');
     }
     return user;
   }
 
-  async findById(id: number): Promise<User> {
+  async findById(id: number): Promise<UserEntity> {
     const user = await this.userModel.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('UserEntity not found');
     }
     return user;
   }
 
-  async findUsers(): Promise<User[]> {
+  async findUsers(): Promise<UserEntity[]> {
     const users = await this.userModel.findAll({
       attributes: { exclude: ['password'] },
     });
@@ -72,8 +69,10 @@ export class UsersService {
     return filteredUsers;
   }
 
-  async updateUser(updateUserDto: UpdateUserDto, currUser: any): Promise<User> {
-    console.log(currUser.sub);
+  async updateUser(
+    updateUserDto: UpdateUserDto,
+    currUser: any,
+  ): Promise<UserEntity> {
     const { username, email } = updateUserDto;
     let { password } = updateUserDto;
 
@@ -83,7 +82,7 @@ export class UsersService {
 
     const user = await this.userModel.findOne({ where: { id: currUser.sub } });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('UserEntity not found');
     }
 
     user.username = username ?? user.username;
@@ -99,12 +98,23 @@ export class UsersService {
     return userPlainObject;
   }
 
-  async updateAdminStatus(id: string): Promise<User> {
+  async updateAdminStatus(id: string): Promise<UserEntity> {
     const user = await this.userModel.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('UserEntity not found');
     }
     user.roles = [...user.roles, RoleEnum.ADMIN];
+
+    return await user.save();
+  }
+
+  async addMoney(addMoneyDto: AddMoneyDto, currUser: any) {
+    const user = await this.userModel.findOne({ where: { id: currUser.sub } });
+    if (!user) {
+      throw new NotFoundException('UserEntity not found');
+    }
+    const { amount } = addMoneyDto;
+    user.balance = parseFloat((Number(user.balance) + parseFloat(amount.toFixed(2))).toFixed(2));
 
     return await user.save();
   }

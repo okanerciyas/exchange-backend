@@ -7,7 +7,7 @@ import {
 } from 'sequelize-typescript';
 
 @Table({ tableName: 'users', schema: 'public' })
-export class User extends Model<User> {
+export class UserEntity extends Model<UserEntity> {
   @PrimaryKey
   @Column({
     type: DataType.UUID,
@@ -25,6 +25,9 @@ export class User extends Model<User> {
 
   @Column({ type: DataType.STRING, allowNull: false, unique: true })
   email: string;
+
+  @Column({ type: DataType.DECIMAL(10, 2), allowNull: false, defaultValue: 0 })
+  balance: number;
 
   @Column({
     type: DataType.ARRAY(DataType.ENUM),

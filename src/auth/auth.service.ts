@@ -1,8 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../entities/user.entity';
+import { UserEntity } from '../entities';
 import { LocalStrategy } from './strategy/local.strategy';
 import { jwtConstants } from './constants';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -10,7 +11,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly localStrategy: LocalStrategy,
   ) {}
-  createToken(user: User): string {
+  createToken(user: UserEntity): string {
     const payload = {
       username: user.username,
       roles: user.roles,
@@ -22,7 +23,8 @@ export class AuthService {
     });
   }
 
-  async login(username: string, password: string): Promise<any> {
+  async login(loginDto: LoginDto): Promise<any> {
+    const { username, password } = loginDto;
     const user = await this.localStrategy.validate(username, password);
 
     if (!user) {
