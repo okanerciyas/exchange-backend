@@ -18,6 +18,7 @@ import { AuthGuard } from './auth/guards/auth.guard';
 import { ConfigModule } from '@nestjs/config';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { ShareModule } from './share/share.module';
+import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ShareModule } from './share/share.module';
     AuthModule,
     PortfolioModule,
     ShareModule,
+    TransactionModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
