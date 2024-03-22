@@ -1,9 +1,9 @@
-import {Body, Controller, Get, Patch, Post} from '@nestjs/common';
-import {Roles} from '../../auth/decorators/role.decorator';
-import {RoleEnum} from '../../entities';
-import {ShareService} from '../services/share.service';
-import {CreateShareDto} from '../dto/create-share.dto';
-import {UpdateShareDto} from '../dto/update-share.dto';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { Roles } from '../../auth/decorators/role.decorator';
+import { RoleEnum } from '../../entities';
+import { ShareService } from '../services/share.service';
+import { CreateShareDto } from '../dto/create-share.dto';
+import { UpdateShareDto } from '../dto/update-share.dto';
 
 @Controller('share')
 export class ShareController {

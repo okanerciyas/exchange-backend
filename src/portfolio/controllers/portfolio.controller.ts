@@ -1,10 +1,10 @@
-import {Body, Controller, Get, Post, Req} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { PortfolioService } from '../services/portfolio.service';
 import { Roles } from '../../auth/decorators/role.decorator';
 import { RoleEnum } from '../../entities';
 import { PortfolioDto } from '../dto/portfolio.dto';
 import { Request } from 'express';
-import {AddInPortfolioDto} from '../dto/add-in-portfolio.dto';
+import { AddInPortfolioDto } from '../dto/add-in-portfolio.dto';
 
 @Controller('portfolio')
 export class PortfolioController {
@@ -36,7 +36,9 @@ export class PortfolioController {
 
   @Post('add')
   @Roles(RoleEnum.USER)
-  async addShareInPortfolio(@Body() addInPortfolio: AddInPortfolioDto, @Req() req: Request,
+  async addShareInPortfolio(
+    @Body() addInPortfolio: AddInPortfolioDto,
+    @Req() req: Request,
   ) {
     return this.portfolioService.addShareInPortfolio(addInPortfolio, req.user);
   }

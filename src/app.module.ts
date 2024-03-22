@@ -19,20 +19,23 @@ import { ConfigModule } from '@nestjs/config';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { ShareModule } from './share/share.module';
 import { TransactionModule } from './transaction/transaction.module';
+import { DatabaseModule } from './configs/db.module';
 
 @Module({
   imports: [
-    SequelizeModule.forRoot({
-      ...postgreConfig,
-      synchronize: true,
-      models: [
-        PortfolioEntity,
-        PortfolioSharesEntity,
-        ShareEntity,
-        UserEntity,
-        TransactionEntity,
-      ],
-    }),
+    // SequelizeModule.forRoot({
+    //   ...postgreConfig,
+    //   synchronize: true,
+    //   autoLoadModels: true,
+    //   models: [
+    //     PortfolioEntity,
+    //     PortfolioSharesEntity,
+    //     ShareEntity,
+    //     UserEntity,
+    //     TransactionEntity,
+    //   ],
+    // }),
+    DatabaseModule,
     UsersModule,
     AuthModule,
     PortfolioModule,

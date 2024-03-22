@@ -30,12 +30,11 @@ export class UserEntity extends Model<UserEntity> {
   balance: number;
 
   @Column({
-    type: DataType.ARRAY(DataType.ENUM),
+    type: DataType.ARRAY(DataType.STRING),
     allowNull: false,
-    values: ['user', 'admin', 'super_admin'],
     defaultValue: ['user'],
   })
-  roles: RoleEnum[];
+  roles: string[];
 }
 
 export enum RoleEnum {

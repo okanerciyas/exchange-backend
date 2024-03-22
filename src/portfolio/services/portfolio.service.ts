@@ -1,4 +1,4 @@
-import {ForbiddenException, Injectable} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import {
   PortfolioEntity,
   PortfolioSharesEntity,
@@ -7,9 +7,9 @@ import {
   TransactionTypeEnum,
   UserEntity,
 } from '../../entities';
-import {InjectModel} from '@nestjs/sequelize';
-import {PortfolioDto} from '../dto/portfolio.dto';
-import {AddInPortfolioDto} from '../dto/add-in-portfolio.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { PortfolioDto } from '../dto/portfolio.dto';
+import { AddInPortfolioDto } from '../dto/add-in-portfolio.dto';
 
 @Injectable()
 export class PortfolioService {
@@ -64,9 +64,9 @@ export class PortfolioService {
     }
 
     return await this.portfolioSharesModel.create({
-        portfolioId: portfolio.id,
-        shareId,
-        amount: 0,
+      portfolioId: portfolio.id,
+      shareId,
+      amount: 0,
     });
   }
 
@@ -132,7 +132,7 @@ export class PortfolioService {
     }
 
     const shareInPortfolio = await this.portfolioSharesModel.findOne({
-        where: { portfolioId: portfolio.id, shareId },
+      where: { portfolioId: portfolio.id, shareId },
     });
 
     if (!shareInPortfolio) {
@@ -156,7 +156,6 @@ export class PortfolioService {
   async sellShare(addInPortfolio: PortfolioDto, currUser: any) {
     const { shareId, amount } = addInPortfolio;
 
-
     const { share, user, existPortfolioShare } = await this.check(
       shareId,
       currUser.sub,
@@ -166,12 +165,13 @@ export class PortfolioService {
       throw new ForbiddenException('Not enough share');
     }
 
-    const calculatedBalance = parseFloat(Number(Number(user.balance) + Number(amount * share.price)).toFixed(2));
+    const calculatedBalance = parseFloat(
+      Number(Number(user.balance) + Number(amount * share.price)).toFixed(2),
+    );
 
     await user.update({
-      balance: calculatedBalance
+      balance: calculatedBalance,
     });
-
 
     await share.update({
       amount: share.amount + amount,
@@ -204,16 +204,16 @@ export class PortfolioService {
     });
 
     return await Promise.all(
-        portfolioShares.map(async (portfolioShare) => {
-          const share = await this.shareModel.findOne({
-            where: {id: portfolioShare.shareId},
-          });
+      portfolioShares.map(async (portfolioShare) => {
+        const share = await this.shareModel.findOne({
+          where: { id: portfolioShare.shareId },
+        });
 
-          return {
-            ...share.toJSON(),
-            amount: portfolioShare.amount,
-          };
-        }),
+        return {
+          ...share.toJSON(),
+          amount: portfolioShare.amount,
+        };
+      }),
     );
   }
 }
